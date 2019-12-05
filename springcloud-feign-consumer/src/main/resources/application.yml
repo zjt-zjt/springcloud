@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: feign-consumer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.client.eureka-server-port}/eureka/
+    eureka-server-port: 8761
+  instance:
+    prefer-ip-address: true #在某些情况下，Eureka优先使用IP地址而不是主机名。设置为true，当应用程序向eureka注册时，它将使用其IP地址而不是其主机名
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    hostname: node1.eureka.com
+
+server:
+  port: 8082

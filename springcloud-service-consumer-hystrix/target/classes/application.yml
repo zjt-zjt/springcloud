@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: service-consumer-hystrix
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.client.eureka-server-port}/eureka/
+    eureka-server-port: 8761
+  instance:
+    prefer-ip-address: true #在某些情况下，Eureka优先使用IP地址而不是主机名。设置为true，当应用程序向eureka注册时，它将使用其IP地址而不是其主机名
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    hostname: node1.eureka.com
+
+hystrix:
+  command:
+    calc_add_command:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 2000 #设置熔断器判定超时的时间，超过此时间的请求会执行降级逻辑，默认1s
+      circuitBreaker:
+        requestVolumeThreshold: 2 #设置熔断阈值，在熔断统计窗口期内，错误请求（超时、异常）次数达到阈值就会触发熔断，执行降级逻辑，默认20
+        sleepWindowInMilliseconds: 10000  #设置熔断器多久进入半开状态，然后再次尝试确定熔断器是否应再次关闭，默认5s
+        errorThresholdPercentage: 50  #设置在熔断统计窗口期内，错误请求达到百分之多少触发熔断，默认50
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 5000 #熔断度量窗口期时间， 默认10s
+server:
+  port: 8082
+
+management:
+  server:
+    port: 8092
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"

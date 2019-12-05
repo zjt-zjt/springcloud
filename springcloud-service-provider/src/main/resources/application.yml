@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: service-provider
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.client.eureka-server-port}/eureka/
+    eureka-server-port: 8761
+  instance:
+    hostname: node1.eureka.com
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+
+server:
+  port: 8085
